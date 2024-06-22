@@ -20,7 +20,7 @@ train_gen = ImageDataGenerator(
 )
 
 # Directory path for training data
-train_path = r"C:\Users\revan\OneDrive\Desktop\COMPUTER VISION\DATASET\real_and_fake_face\train"
+train_path = r" "
 training_set = train_gen.flow_from_directory(
     train_path,
     target_size=(64, 64),
@@ -30,7 +30,7 @@ training_set = train_gen.flow_from_directory(
 
 # Data rescaling for test set
 test_gen = ImageDataGenerator(rescale=1./255)
-test_path = r"C:\Users\revan\OneDrive\Desktop\COMPUTER VISION\DATASET\real_and_fake_face\test"
+test_path = r" "
 test_set = test_gen.flow_from_directory(
     test_path,
     target_size=(64, 64),
@@ -60,3 +60,22 @@ model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy']
 
 # Train the model
 model.fit(training_set, validation_data=test_set, epochs=25)
+
+test_image_path = r" "
+test_image = image.load_img(test_image_path, target_size=(64, 64))
+test_image = image.img_to_array(test_image)
+test_image = np.expand_dims(test_image, axis=0)
+test_image = test_image / 255.0  # Rescale the image to match training set preprocessing
+
+# Predict the class of the test image
+result = model.predict(test_image)
+
+# Print the class indices
+print(training_set.class_indices)
+
+# Determine and print the prediction based on the result
+if result[0][0] > 0.5:
+    prediction = 'real'
+else:
+    prediction = 'fake'
+print(prediction)
